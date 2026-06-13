@@ -31,15 +31,38 @@ jobs:
       - name: Build
         run: npm run build
 
-  docker:
-    name: Docker Build & Push
+  release:
+    name: Release Please
     runs-on: ubuntu-latest
     needs: ci
-    if: github.ref == 'refs/heads/main' || github.base_ref == 'main'
-
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: write
       pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - name: Release Please
+        id: release
+        uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: node
+
+  docker:
+    name: Docker Build & Push
+    runs-on: ubuntu-latest
+    needs: [ci, release]
+    if: |
+      always() && 
+      needs.ci.result == 'success' && 
+      (
+        github.event_name == 'pull_request' || 
+        github.event_name == 'workflow_dispatch' || 
+        needs.release.outputs.release_created == 'true'
+      )
+    permissions:
+      contents: read
       packages: write
 
     steps:
@@ -49,13 +72,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Release Please
-        id: release
-        if: github.ref == 'refs/heads/main'
-        uses: google-github-actions/release-please-action@v4
-        with:
-          release-type: node
-
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -64,10 +80,11 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha
-            type=raw,value=${{ steps.release.outputs.tag_name || 'none' }},enable=${{ steps.release.outputs.release_created == 'true' }}
+            type=raw,value=${{ needs.release.outputs.tag_name || 'none' }},enable=${{ needs.release.outputs.release_created == 'true' }}
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
+        if: ${{ needs.release.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch' }}
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -77,7 +94,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ steps.release.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch' }}
+          push: ${{ needs.release.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha

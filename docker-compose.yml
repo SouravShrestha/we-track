@@ -1,7 +1,6 @@
 services:
   we-track:
-    build: .
-    image: we-track
+    image: ghcr.io/souravshrestha/we-track:latest
     ports:
       - "3000:3000"
     volumes:
