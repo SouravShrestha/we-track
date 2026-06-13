@@ -1,0 +1,15 @@
+services:
+  we-track:
+    build: .
+    image: we-track
+    ports:
+      - "3000:3000"
+    volumes:
+      - we-track-data:/data
+      - /Users:/Users:ro
+    environment:
+      - DATA_DIR=/data
+    restart: unless-stopped
+
+volumes:
+  we-track-data:

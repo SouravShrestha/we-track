@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.library-explorer{
+  overflow-y: scroll; 
+}
+
+::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: #010409;
+}
+
+::-webkit-scrollbar
+{
+	width: .375rem;
+	border-radius: 10px;
+	background-color: #30363db3;
+}
+
+::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background-color: #30363db3;
+}
+
+.loading-bar {
+  width: 20%;
+}
+  
+.gradient-loader {
+  @apply bg-gradient-to-r from-accent via-purple-500 to-pink-500;
+  background-size: 200% 100%;
+  animation: gradiant-move 1s infinite;
+}
+@keyframes gradiant-move { 
+  0%{background-position:left; width: 0%;}
+  50%{background-position:left; width: 50%;}
+  100%{background-position:left; width: 100%;}
+}
+
+.transition-bg {
+  transition: background-color 0.2s ease-in-out; /* Adjust the duration and easing function as needed */
+}
+
+.filter-secondary {
+  filter: brightness(0) saturate(100%) invert(79%) sepia(3%) saturate(1210%) hue-rotate(174deg) brightness(77%) contrast(79%);
+}
+
+@keyframes center-animate {
+  0% {
+      width: 208px;
+  }
+  100% {
+      width: 250px;
+  }
+}
+
+.center {
+  animation: center-animate 1s ease infinite alternate;
+}
+
+.dropdown-toggle {
+  z-index: 9999; /* Set a high z-index value */
+}
+
+.my-masonry-grid {
+  display: -webkit-box; /* Not needed if autoprefixing */
+  display: -ms-flexbox; /* Not needed if autoprefixing */
+  display: flex;
+  margin-left: -32px; /* gutter size offset */
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 32px; /* gutter size */
+  background-clip: padding-box;
+}
