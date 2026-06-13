@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/SouravShrestha/we-track/compare/v1.0.0...v1.1.0) (2026-06-13)
+
+
+### Features
+
+* enhance video statistics calculation by aggregating lessons and improving progress evaluation ([94eb468](https://github.com/SouravShrestha/we-track/commit/94eb468409298b6a3d3df4b313047140026bd3cf))
+
 ## 1.0.0 (2026-06-13)
 
 
