@@ -1,14 +1,30 @@
+import { convertDurationToSeconds } from "./convertors";
+
 export const calculateVideoStats = (folders) => {
   let numberOfVideos = 0;
   let startedVideosCount = 0;
   let totalProgress = 0;
 
   folders?.subfolders?.forEach((subfolder) => {
-    const videos = subfolder.videos;
+    const videos = [];
+    if (subfolder.lessons && subfolder.lessons.length > 0) {
+      subfolder.lessons.forEach(ls => {
+        if (ls.videos) videos.push(...ls.videos);
+      });
+    }
+    if (subfolder.videos) {
+      videos.push(...subfolder.videos);
+    }
+
     numberOfVideos += videos.length;
     videos.forEach((video) => {
       if (video.progress > 0) startedVideosCount++;
-      totalProgress += video.progress > 0 ? 1 : 0;
+      const durationSeconds = convertDurationToSeconds(video.duration);
+      if (durationSeconds > 0) {
+        totalProgress += Math.min(video.progress / durationSeconds, 1);
+      } else {
+        totalProgress += video.progress > 0 ? 1 : 0;
+      }
     });
   });
 
