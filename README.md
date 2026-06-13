@@ -49,6 +49,19 @@ Main Folder/
 
 ---
 
+## Quick Start (Docker)
+
+To run the pre-built image without needing the source code, run the following commands:
+
+```bash
+docker pull ghcr.io/souravshrestha/we-track:latest
+docker run -d --name we-track -p 3000:3000 -v /Users/sourav/Documents:/Documents ghcr.io/souravshrestha/we-track:latest
+```
+
+> **Note:** You can replace `/Users/sourav/Documents` with the path to the folder containing your courses.
+
+---
+
 ## Running Locally
 
 **Prerequisites:** Node.js 20+
