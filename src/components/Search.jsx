@@ -1,25 +1,25 @@
-'use client';
-import React, { useEffect, useState, useRef } from 'react';
-const searchIcon = '/images/search.png';
-const closeIcon = '/images/close.png';
-const slashIcon = '/images/slash.png';
-const folderIconPlain = '/images/folder.png';
-import Tag from './Tag';
+"use client";
+import React, { useEffect, useState, useRef } from "react";
+const searchIcon = "/images/search.png";
+const closeIcon = "/images/close.png";
+const slashIcon = "/images/slash.png";
+const folderIconPlain = "/images/folder.png";
+import Tag from "./Tag";
 import { getRandomColorPair } from "../utils/colorUtils";
-const loadingGif = '/images/loading-small.gif';
-import { fetchTags, fetchFolders, fetchVideos } from '../utils/api';
-import { useRouter } from 'next/navigation';
+const loadingGif = "/images/loading-small.gif";
+import { fetchTags, fetchFolders, fetchVideos } from "../utils/api";
+import { useRouter } from "next/navigation";
 
 const Search = () => {
   const [isFocused, setIsFocused] = useState(false);
-  const inputRef = useRef(null); 
+  const inputRef = useRef(null);
   const resultRef = useRef(null);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [tagColors, setTagColors] = useState({});
-  const [tags, setTags] = useState([]);  // To hold the fetched tags
-  const [folders, setFolders] = useState([]);  // To hold the fetched folders
-  const [videos, setVideos] = useState([]);  // To hold the fetched folders
-  
+  const [tags, setTags] = useState([]); // To hold the fetched tags
+  const [folders, setFolders] = useState([]); // To hold the fetched folders
+  const [videos, setVideos] = useState([]); // To hold the fetched folders
+
   // Loading states for tags, folders, and videos
   const [loadingTags, setLoadingTags] = useState(false);
   const [loadingFolders, setLoadingFolders] = useState(false);
@@ -27,9 +27,9 @@ const Search = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if(isFocused && inputRef){
+    if (isFocused && inputRef) {
       inputRef.current.focus();
-    }else{
+    } else {
       inputRef.current.blur();
     }
   }, [isFocused]);
@@ -48,7 +48,7 @@ const Search = () => {
             const tagResponse = await fetchTags(inputValue);
             setTags(tagResponse);
           } catch (error) {
-            console.error('Error fetching tags:', error);
+            console.error("Error fetching tags:", error);
           } finally {
             setLoadingTags(false);
           }
@@ -56,9 +56,9 @@ const Search = () => {
           // Fetch Folders
           try {
             const folderResponse = await fetchFolders(inputValue);
-            setFolders(folderResponse.slice(0, 3));  // Limit to top 3
+            setFolders(folderResponse.slice(0, 3)); // Limit to top 3
           } catch (error) {
-            console.error('Error fetching folders:', error);
+            console.error("Error fetching folders:", error);
           } finally {
             setLoadingFolders(false);
           }
@@ -66,21 +66,20 @@ const Search = () => {
           // Fetch Videos
           try {
             const videoResponse = await fetchVideos(inputValue);
-            setVideos(videoResponse.slice(0, 3));  // Limit to top 3
+            setVideos(videoResponse.slice(0, 3)); // Limit to top 3
           } catch (error) {
-            console.error('Error fetching videos:', error);
+            console.error("Error fetching videos:", error);
           } finally {
             setLoadingVideos(false);
           }
-
         } catch (error) {
-          console.error('Error fetching tags:', error);
+          console.error("Error fetching tags:", error);
         }
       }, 500); // Debounce by 500ms
 
-      return () => clearTimeout(timeoutId);  // Clean up previous timeout
+      return () => clearTimeout(timeoutId); // Clean up previous timeout
     } else {
-      setTags([]);  // Clear tags if input is empty
+      setTags([]); // Clear tags if input is empty
       setFolders([]);
       setVideos([]);
       setLoadingTags(false);
@@ -92,20 +91,20 @@ const Search = () => {
   useEffect(() => {
     // Handle key press events
     const handleKeyDown = (event) => {
-      if (event.key === '/') {
+      if (event.key === "/") {
         // Only focus the input if it's not already focused
         if (
           document.activeElement !== inputRef.current &&
           !["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(
-            document.activeElement.tagName
+            document.activeElement.tagName,
           )
         ) {
           event.preventDefault();
           inputRef.current.focus();
         }
       }
-      
-      if (event.key === 'Escape') {
+
+      if (event.key === "Escape") {
         // Close the dropdown when Escape is pressed
         setIsFocused(false);
         setInputValue("");
@@ -114,26 +113,30 @@ const Search = () => {
     };
 
     // Add event listener for keydown
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     // Cleanup the event listener on component unmount
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (resultRef.current && !resultRef.current.contains(event.target) && event.target !== inputRef.current) {
+      if (
+        resultRef.current &&
+        !resultRef.current.contains(event.target) &&
+        event.target !== inputRef.current
+      ) {
         setIsFocused(false); // Blur the input if click is outside of the input and results
       }
     };
 
     // Add event listener to document for clicks outside the input and result dropdown
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -142,7 +145,6 @@ const Search = () => {
     if (!resultRef.current || forceBlur) {
       // Clicked outside the input and resultRef, so blur the input
       setIsFocused(false);
-      
     } else {
       // Otherwise, keep the input focused
       inputRef.current.focus();
@@ -174,31 +176,33 @@ const Search = () => {
     const regex = new RegExp(`(${query})`, "gi");
 
     // Replace matched portions with highlighted span
-    return text.split(regex).map((part, index) => 
+    return text.split(regex).map((part, index) =>
       regex.test(part) ? (
-        <span key={index} className="text-colorSuccess">{part}</span>  // Highlighted part
+        <span key={index} className="text-colorSuccess">
+          {part}
+        </span> // Highlighted part
       ) : (
-        part  // Non-matching part
-      )
+        part // Non-matching part
+      ),
     );
   };
 
   // Click handler for tags
   const handleTagClick = (tag) => {
-    console.log('Selected Tag:', tag);
+    console.log("Selected Tag:", tag);
     handleBlur(null, true);
   };
 
   // Click handler for folders
   const handleFolderClick = (folder) => {
-    console.log('Selected Folder:', folder);
+    console.log("Selected Folder:", folder);
     setIsFocused(false); // Close the dropdown after selection
     router.push(`/folder/${folder.id}`);
   };
 
   // Click handler for videos/content
   const handleVideoClick = (video) => {
-    console.log('Selected Video:', video)
+    console.log("Selected Video:", video);
     setIsFocused(false); // Close the dropdown after selection
     router.push(`/folder/${video.folder_id}?videoIdToPlay=${video.id}`);
   };
@@ -210,96 +214,68 @@ const Search = () => {
   };
 
   return (
-    <div className="absolute right-32 top-0 flex space-x-6 items-center">
-      <form className="flex space-x-0 relative flex-col">
-        <div className="relative w-full h-20 flex items-center max-h-20">
+    <>
+      {/* Mobile: Full-width search bar below header */}
+      <div className="sm:hidden w-full relative">
+        <div className="flex items-center relative">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+            <img
+              src={searchIcon}
+              alt="Search"
+              className={`w-4 h-4 ${isFocused ? "filter-white" : "filter-disabled"}`}
+            />
+          </div>
           <input
             ref={inputRef}
             type="text"
-            className={`${isFocused ? 'w-100' : 'w-72'} py-1.5 bg-primary sm:text-sm sm:leading-6 border-colorborder border px-6 pl-10 pr-10 rounded-md focus:outline-none focus:ring-1 focus:ring-white placeholder:text-colortextsecondary ease transform origin-right duration-100 focus:w-100 placeholder:opacity-85`}
+            className="w-full py-2 pl-9 pr-4 bg-primary text-sm rounded-md border border-colorborder focus:outline-none focus:ring-1 focus:ring-white placeholder:text-colortextsecondary placeholder:text-sm"
             placeholder="Search content here..."
             value={inputValue}
             onChange={handleSearchChange}
             onFocus={() => setIsFocused(true)}
             onBlur={handleBlur}
           />
-          {/* Left Icon (search icon) */}
-          <div className="absolute left-3 top-1/2 pointer-events-none transform -translate-y-1/2">
-            <img
-              src={searchIcon} // Replace with actual search icon
-              alt="Search Icon"
-              className={`w-4 h-4 ${
-                isFocused ? "filter-white" : "filter-disabled"
-              }`}
-              onClick={handleCancelClicked}
-            />
-          </div>
-          {/* Right Icon (clear icon) */}
-          <div className="absolute right-0.5 top-1/2 transform -translate-y-1/2">
-            <img
-              src={isFocused ? closeIcon : slashIcon} // Replace with actual icons
-              alt="Slash Icon"
-              className={`p-0.5 w-5 h-5 mr-2 ${
-                isFocused
-                  ? "filter-disabled cursor-pointer hover:filter-white"
-                  : "filter-disabled pointer-events-none"
-              }`}
-            />
-          </div>
+          {inputValue && (
+            <div className="absolute right-2 top-1/2 -translate-y-1/2">
+              <img
+                src={closeIcon}
+                alt="Clear"
+                className="w-4 h-4 filter-disabled cursor-pointer hover:filter-white"
+                onClick={handleCancelClicked}
+              />
+            </div>
+          )}
         </div>
 
+        {/* Mobile results dropdown */}
         {isFocused && (
           <div
-            className="flex text-xs text-colortext bg-primarydark w-full py-3 px-4 border-colorborder border -mt-3 rounded-md flex-col space-y-2.5 z-10"
-            ref={resultRef} // Ensure resultRef is attached here
+            className="absolute top-full left-0 w-full mt-1 bg-primarydark border border-colorborder rounded-md py-3 px-4 flex flex-col space-y-2.5 text-xs text-colortext z-50 max-h-[60vh] overflow-y-auto"
+            ref={resultRef}
             onClick={(e) => e.stopPropagation()}
           >
             <div>
               <div className="font-semibold">Searching for</div>
-              <div className="flex mt-3 space-x-3 mb-1">
+              <div className="flex mt-3 gap-2 flex-wrap mb-1">
                 <span className="flex items-center bg-colorsecondary py-1.5 pl-3.5 pr-2.5 rounded-full font-medium">
-                  <div className="cursor-default">
-                    <span className="text-blue-500 mr-2">ⵌ</span>
-                    <span>Tags</span>
-                  </div>
-                  <img
-                    src={closeIcon}
-                    alt="Close Icon"
-                    className="ml-4 w-3.5 h-3.5 filter-secondary hover:filter-white cursor-pointer"
-                  />
+                  <span className="text-blue-500 mr-2">ⵌ</span>
+                  <span>Tags</span>
                 </span>
                 <span className="flex items-center bg-colorsecondary py-1.5 pl-3.5 pr-2.5 rounded-full font-medium">
-                  <div className="cursor-default flex items-center">
-                    <img src={folderIconPlain} className="w-3 h-3 mr-2" />
-                    <span>Folder name</span>
-                  </div>
-                  <img
-                    src={closeIcon}
-                    alt="Close Icon"
-                    className="ml-4 w-3.5 h-3.5 filter-secondary hover:filter-white cursor-pointer"
-                  />
+                  <img src={folderIconPlain} className="w-3 h-3 mr-2" alt="" />
+                  <span>Folder name</span>
                 </span>
                 <span className="flex items-center bg-colorsecondary py-1.5 pl-3.5 pr-2.5 rounded-full font-medium">
-                  <div className="cursor-default">
-                    <span className="mr-2 text-xxs">🎥</span>
-                    <span>Content</span>
-                  </div>
-                  <img
-                    src={closeIcon}
-                    alt="Close Icon"
-                    className="ml-4 w-3.5 h-3.5 filter-secondary hover:filter-white cursor-pointer"
-                  />
+                  <span className="mr-2 text-xxs">🎥</span>
+                  <span>Content</span>
                 </span>
               </div>
             </div>
 
-            {inputValue != "" && (
-              <hr className="border-0.5 border-colorborder" />
-            )}
+            {inputValue && <hr className="border-colorborder" />}
 
-            {/* Tags result */}
-            {inputValue != "" && (
-              <div className="mt-2">
+            {inputValue && (
+              <div className="mt-1">
                 <div className="flex items-center">
                   <span className="text-blue-500 mr-1.5 text-sm font-medium">
                     ⵌ
@@ -308,24 +284,24 @@ const Search = () => {
                   {loadingTags && (
                     <img
                       src={loadingGif}
-                      alt="Loading gif"
-                      className="w-5 h-5 ml-1.5"
+                      alt="Loading"
+                      className="w-4 h-4 ml-1.5"
                     />
                   )}
                 </div>
-                <div className="flex mt-1.5 min-h-9 items-center">
+                <div className="flex mt-1.5 flex-wrap gap-1 min-h-8 items-center">
                   {tags.length === 0 ? (
                     <div className="text-colortextsecondary ml-2">
                       No tag found
                     </div>
                   ) : (
                     tags.map((tag) => (
-                      <div key={tag.id} onClick={() => handleTagClick(tag)} className="cursor-pointer hover:scale-105 transform ease-in-out duration-200">
-                        <Tag
-                          key={tag.id}
-                          text={tag.name}
-                          color={getTagColor(tag.id)}
-                        />
+                      <div
+                        key={tag.id}
+                        onClick={() => handleTagClick(tag)}
+                        className="cursor-pointer hover:scale-105 transform ease-in-out duration-200"
+                      >
+                        <Tag text={tag.name} color={getTagColor(tag.id)} />
                       </div>
                     ))
                   )}
@@ -333,22 +309,23 @@ const Search = () => {
               </div>
             )}
 
-            {inputValue != "" && (
-              <hr className="border-0.5 border-colorborder" />
-            )}
+            {inputValue && <hr className="border-colorborder" />}
 
-            {/* Folder result */}
-            {inputValue != "" && (
+            {inputValue && (
               <div>
-                <div className="font-semibold flex justify-between mt-2">
-                  <div className="flex">
-                    <img src={folderIconPlain} className="w-3.5 h-3.5 mr-2" />
+                <div className="font-semibold flex justify-between mt-1">
+                  <div className="flex items-center">
+                    <img
+                      src={folderIconPlain}
+                      className="w-3.5 h-3.5 mr-2"
+                      alt=""
+                    />
                     Folder name
                     {loadingFolders && (
                       <img
                         src={loadingGif}
-                        alt="Loading gif"
-                        className="w-5 h-5 ml-1.5"
+                        alt="Loading"
+                        className="w-4 h-4 ml-1.5"
                       />
                     )}
                   </div>
@@ -356,7 +333,7 @@ const Search = () => {
                     Show all
                   </div>
                 </div>
-                <div className="flex mt-1.5 min-h-10 flex-col justify-center">
+                <div className="flex mt-1.5 min-h-8 flex-col">
                   {folders.length === 0 ? (
                     <div className="text-colortextsecondary ml-2">
                       No folder found
@@ -376,31 +353,27 @@ const Search = () => {
               </div>
             )}
 
-            {inputValue != "" && (
-              <hr className="border-0.5 border-colorborder" />
-            )}
+            {inputValue && <hr className="border-colorborder" />}
 
-            {/* Content result */}
-            {inputValue != "" && (
+            {inputValue && (
               <div>
-                <div className="cursor-default font-semibold flex justify-between mt-2">
-                  <div className="flex">
+                <div className="font-semibold flex justify-between mt-1">
+                  <div className="flex items-center">
                     <span className="mr-2 text-xxs">🎥</span>
-                    <span>Content</span>
+                    Content
                     {loadingVideos && (
                       <img
                         src={loadingGif}
-                        alt="Loading gif"
-                        className="w-5 h-5 ml-1.5"
+                        alt="Loading"
+                        className="w-4 h-4 ml-1.5"
                       />
                     )}
                   </div>
-
                   <div className="text-xxs hover:text-blue-600 font-normal text-colortextsecondary cursor-pointer">
                     Show all
                   </div>
                 </div>
-                <div className="flex mt-1.5 min-h-10 justify-center flex-col">
+                <div className="flex mt-1.5 min-h-8 flex-col">
                   {videos.length === 0 ? (
                     <div className="text-colortextsecondary ml-2">
                       No video found
@@ -421,8 +394,230 @@ const Search = () => {
             )}
           </div>
         )}
-      </form>
-    </div>
+      </div>
+
+      {/* Desktop: Absolute-positioned header bar */}
+      <div className="hidden sm:block absolute right-32 top-0">
+        <form className="flex space-x-0 relative flex-col">
+          <div className="relative w-full h-20 flex items-center max-h-20">
+            <input
+              ref={inputRef}
+              type="text"
+              className={`${isFocused ? "w-100" : "w-72"} py-1.5 bg-primary sm:text-sm sm:leading-6 border-colorborder border px-6 pl-10 pr-10 rounded-md focus:outline-none focus:ring-1 focus:ring-white placeholder:text-colortextsecondary ease transform origin-right duration-100 focus:w-100 placeholder:opacity-85`}
+              placeholder="Search content here..."
+              value={inputValue}
+              onChange={handleSearchChange}
+              onFocus={() => setIsFocused(true)}
+              onBlur={handleBlur}
+            />
+            {/* Left Icon */}
+            <div className="absolute left-3 top-1/2 pointer-events-none transform -translate-y-1/2">
+              <img
+                src={searchIcon}
+                alt="Search Icon"
+                className={`w-4 h-4 ${isFocused ? "filter-white" : "filter-disabled"}`}
+                onClick={handleCancelClicked}
+              />
+            </div>
+            {/* Right Icon */}
+            <div className="absolute right-0.5 top-1/2 transform -translate-y-1/2">
+              <img
+                src={isFocused ? closeIcon : slashIcon}
+                alt="Slash Icon"
+                className={`p-0.5 w-5 h-5 mr-2 ${
+                  isFocused
+                    ? "filter-disabled cursor-pointer hover:filter-white"
+                    : "filter-disabled pointer-events-none"
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* Desktop results dropdown */}
+          {isFocused && (
+            <div
+              className="flex text-xs text-colortext bg-primarydark w-full py-3 px-4 border-colorborder border -mt-3 rounded-md flex-col space-y-2.5 z-10"
+              ref={resultRef}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div>
+                <div className="font-semibold">Searching for</div>
+                <div className="flex mt-3 space-x-3 mb-1">
+                  <span className="flex items-center bg-colorsecondary py-1.5 pl-3.5 pr-2.5 rounded-full font-medium">
+                    <div className="cursor-default">
+                      <span className="text-blue-500 mr-2">ⵌ</span>
+                      <span>Tags</span>
+                    </div>
+                    <img
+                      src={closeIcon}
+                      alt="Close Icon"
+                      className="ml-4 w-3.5 h-3.5 filter-secondary hover:filter-white cursor-pointer"
+                    />
+                  </span>
+                  <span className="flex items-center bg-colorsecondary py-1.5 pl-3.5 pr-2.5 rounded-full font-medium">
+                    <div className="cursor-default flex items-center">
+                      <img
+                        src={folderIconPlain}
+                        className="w-3 h-3 mr-2"
+                        alt=""
+                      />
+                      <span>Folder name</span>
+                    </div>
+                    <img
+                      src={closeIcon}
+                      alt="Close Icon"
+                      className="ml-4 w-3.5 h-3.5 filter-secondary hover:filter-white cursor-pointer"
+                    />
+                  </span>
+                  <span className="flex items-center bg-colorsecondary py-1.5 pl-3.5 pr-2.5 rounded-full font-medium">
+                    <div className="cursor-default">
+                      <span className="mr-2 text-xxs">🎥</span>
+                      <span>Content</span>
+                    </div>
+                    <img
+                      src={closeIcon}
+                      alt="Close Icon"
+                      className="ml-4 w-3.5 h-3.5 filter-secondary hover:filter-white cursor-pointer"
+                    />
+                  </span>
+                </div>
+              </div>
+
+              {inputValue != "" && (
+                <hr className="border-0.5 border-colorborder" />
+              )}
+
+              {inputValue != "" && (
+                <div className="mt-2">
+                  <div className="flex items-center">
+                    <span className="text-blue-500 mr-1.5 text-sm font-medium">
+                      ⵌ
+                    </span>
+                    <span className="font-semibold">Tags</span>
+                    {loadingTags && (
+                      <img
+                        src={loadingGif}
+                        alt="Loading gif"
+                        className="w-5 h-5 ml-1.5"
+                      />
+                    )}
+                  </div>
+                  <div className="flex mt-1.5 min-h-9 items-center">
+                    {tags.length === 0 ? (
+                      <div className="text-colortextsecondary ml-2">
+                        No tag found
+                      </div>
+                    ) : (
+                      tags.map((tag) => (
+                        <div
+                          key={tag.id}
+                          onClick={() => handleTagClick(tag)}
+                          className="cursor-pointer hover:scale-105 transform ease-in-out duration-200"
+                        >
+                          <Tag
+                            key={tag.id}
+                            text={tag.name}
+                            color={getTagColor(tag.id)}
+                          />
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {inputValue != "" && (
+                <hr className="border-0.5 border-colorborder" />
+              )}
+
+              {inputValue != "" && (
+                <div>
+                  <div className="font-semibold flex justify-between mt-2">
+                    <div className="flex">
+                      <img
+                        src={folderIconPlain}
+                        className="w-3.5 h-3.5 mr-2"
+                        alt=""
+                      />
+                      Folder name
+                      {loadingFolders && (
+                        <img
+                          src={loadingGif}
+                          alt="Loading gif"
+                          className="w-5 h-5 ml-1.5"
+                        />
+                      )}
+                    </div>
+                    <div className="text-xxs hover:text-blue-600 font-normal text-colortextsecondary cursor-pointer">
+                      Show all
+                    </div>
+                  </div>
+                  <div className="flex mt-1.5 min-h-10 flex-col justify-center">
+                    {folders.length === 0 ? (
+                      <div className="text-colortextsecondary ml-2">
+                        No folder found
+                      </div>
+                    ) : (
+                      folders.map((folder) => (
+                        <div
+                          key={folder.id}
+                          className="mt-2 font-mono hover:bg-colorsecondary w-full py-1.5 px-3 cursor-pointer rounded-md"
+                          onClick={() => handleFolderClick(folder)}
+                        >
+                          📂 {highlightMatch(folder.path, inputValue)}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {inputValue != "" && (
+                <hr className="border-0.5 border-colorborder" />
+              )}
+
+              {inputValue != "" && (
+                <div>
+                  <div className="cursor-default font-semibold flex justify-between mt-2">
+                    <div className="flex">
+                      <span className="mr-2 text-xxs">🎥</span>
+                      <span>Content</span>
+                      {loadingVideos && (
+                        <img
+                          src={loadingGif}
+                          alt="Loading gif"
+                          className="w-5 h-5 ml-1.5"
+                        />
+                      )}
+                    </div>
+                    <div className="text-xxs hover:text-blue-600 font-normal text-colortextsecondary cursor-pointer">
+                      Show all
+                    </div>
+                  </div>
+                  <div className="flex mt-1.5 min-h-10 justify-center flex-col">
+                    {videos.length === 0 ? (
+                      <div className="text-colortextsecondary ml-2">
+                        No video found
+                      </div>
+                    ) : (
+                      videos.map((video) => (
+                        <div
+                          key={video.id}
+                          className="mt-2 text-xs hover:bg-colorsecondary w-full py-1.5 px-3 cursor-pointer rounded-md"
+                          onClick={() => handleVideoClick(video)}
+                        >
+                          🎬 {highlightMatch(video.name, inputValue)}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </form>
+      </div>
+    </>
   );
 };
 

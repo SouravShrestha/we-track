@@ -1,6 +1,6 @@
-'use client';
+"use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { addMainFolder, fetchMainFolders, removeMainFolder } from "../utils/api";
+import { addMainFolder, fetchMainFolders } from "../utils/api";
 const newFolderIcon = "/images/add-folder.png";
 
 const Popup = ({ isOpen, onClose, onFoldersUpdate }) => {
@@ -25,9 +25,12 @@ const Popup = ({ isOpen, onClose, onFoldersUpdate }) => {
     }
   }, [isOpen]);
 
-  const handleKeyDown = useCallback((event) => {
-    if (event.key === "Escape") onClose();
-  }, [onClose]);
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === "Escape") onClose();
+    },
+    [onClose],
+  );
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -51,35 +54,44 @@ const Popup = ({ isOpen, onClose, onFoldersUpdate }) => {
     setFolderPath("");
   };
 
-  const handleRemoveFolder = async (folder) => {
-    await removeMainFolder(folder.id);
-    setErrorMessage("");
-    setMessage("🗑️ Folder removed successfully!");
-    await loadFolders();
-    onFoldersUpdate();
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-opacity-70 bg-primarydark z-10">
-      <div className="px-8 py-6 bg-primary lg:w-1/3 border border-colorborder relative md:w-1/2 sm:w-3/4 w-4/5">
+    <div
+      className="fixed inset-0 z-[100] flex flex-col justify-end sm:items-center sm:justify-center bg-primarydark/70"
+      onClick={onClose}
+    >
+      {/* Modal panel */}
+      <div
+        className="
+          w-full rounded-t-xl sm:rounded-md
+          bg-primary border border-colorborder
+          px-5 pt-8 pb-8 sm:px-8 sm:py-6
+          sm:w-3/4 md:w-1/2 lg:w-1/3
+          relative
+          animate-slide-up sm:animate-none
+        "
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close button */}
         <button
-          className="absolute top-0 right-2 text-colortext hover:text-red-400 text-xl"
+          className="absolute top-3 right-3 text-colortextsecondary hover:text-red-400 text-2xl leading-none"
           onClick={onClose}
           aria-label="Close popup"
         >
           &times;
         </button>
-        <div className="mb-3">
-          <h3 className="mb-3">Existing Folders</h3>
-          <div className="max-h-40 flex-wrap text-sm flex">
+
+        {/* Existing folders */}
+        <div className="mb-4">
+          <h3 className="mb-3 text-sm font-semibold">Existing Folders</h3>
+          <div className="max-h-36 overflow-y-auto flex flex-wrap gap-2">
             {folders.length ? (
               folders.map((folder) => (
                 <div
                   key={folder.id}
-                  className="px-2 py-1 border border-colorborder mr-3 mb-3 cursor-pointer hover:bg-gradient-to-r hover:from-gradientStart hover:to-gradientEnd rounded-sm transition-colors duration-200 ease-in-out"
-                  onClick={() => handleRemoveFolder(folder)}
+                  className="max-w-full px-2 py-1 border border-colorborder rounded-sm text-xs truncate"
+                  title={folder.path}
                 >
                   {folder.path}
                 </div>
@@ -91,9 +103,17 @@ const Popup = ({ isOpen, onClose, onFoldersUpdate }) => {
             )}
           </div>
         </div>
-        <div className="flex items-center mb-4 mt-5">
-          <img src={newFolderIcon} alt="Add folder" className="w-5 h-5 mr-3" />
-          <h2 className="text-base font-semibold">Add a new folder</h2>
+
+        {/* Add new folder */}
+        <div className="flex items-center mb-3 mt-5">
+          <img
+            src={newFolderIcon}
+            alt="Add folder"
+            className="w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3"
+          />
+          <h2 className="text-sm md:text-base font-semibold">
+            Add a new folder
+          </h2>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="relative flex items-center">
@@ -101,20 +121,24 @@ const Popup = ({ isOpen, onClose, onFoldersUpdate }) => {
               type="text"
               value={folderPath}
               onChange={(e) => setFolderPath(e.target.value)}
-              className="w-full py-1.5 bg-primarydark sm:text-sm sm:leading-6 border-colorborder border px-2 pr-10 mb-4"
-              placeholder="Enter new folder path"
+              className="w-full py-2 sm:py-1.5 bg-primarydark text-sm border-colorborder border px-3 pr-10 mb-4 rounded-sm focus:outline-none focus:ring-1 focus:ring-white"
+              placeholder="Enter folder path"
               ref={inputRef}
             />
             <button
               type="submit"
-              className="absolute right-2 text-white rounded-md hover:bg-gradient-to-r hover:from-gradientStart hover:to-gradientEnd px-2 top-1.5"
+              className="absolute right-2 top-1.5 text-white rounded-md hover:bg-gradient-to-r hover:from-gradientStart hover:to-gradientEnd px-2 py-0.5"
             >
               ⏎
             </button>
           </div>
         </form>
-        {message && <div className="text-colortextsecondary text-xs">{message}</div>}
-        {errorMessage && <div className="text-colortextsecondary text-xs">{errorMessage}</div>}
+        {message && (
+          <div className="text-colortextsecondary text-xs">{message}</div>
+        )}
+        {errorMessage && (
+          <div className="text-red-400 text-xs">{errorMessage}</div>
+        )}
       </div>
     </div>
   );

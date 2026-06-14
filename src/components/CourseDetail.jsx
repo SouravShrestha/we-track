@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import LibraryExplorer from "./LibraryExplorer";
@@ -41,18 +41,18 @@ const CourseDetail = () => {
       ...prevProgress,
       [videoId]: progress,
     }));
-    setIsManualChange(false)
+    setIsManualChange(false);
   };
 
   const videoList = contents.flatMap((content) => {
     if (content.lessons && content.lessons.length > 0) {
-      return content.lessons.flatMap(ls => ls.videos || []);
+      return content.lessons.flatMap((ls) => ls.videos || []);
     }
     return content.videos || [];
   });
 
   const currentIndex = videoList.findIndex(
-    (video) => video.id === selectedVideo.id
+    (video) => video.id === selectedVideo.id,
   );
   const nextVideo =
     currentIndex < videoList.length - 1 ? videoList[currentIndex + 1] : null;
@@ -60,17 +60,48 @@ const CourseDetail = () => {
   const nextVideoNum = nextVideo ? currentIndex + 2 : null;
   const prevVideoNum = prevVideo ? currentIndex : null;
 
-  const [dropdownVisible, setDropdownVisible] = useState(false); // State to track dropdown visibility
-  const handleDropdownVisibilityChange = (isVisible) => {
-    setDropdownVisible(isVisible); // Update the parent component's dropdown visibility state
-  };
+  const [isExplorerOpen, setIsExplorerOpen] = useState(false);
+
+  useEffect(() => {
+    if (isExplorerOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isExplorerOpen]);
 
   return (
-    <div className="flex w-full">
+    <div className="flex flex-col sm:flex-row w-full">
+      {/* Mobile Header Toggle Button */}
       <div
-        className={`float-left w-2/6 xl:w-p21 text-colortextsecondary sticky top-0 h-[calc(100vh-6.5rem)] select-none mt-4 pl-2 ${
-          dropdownVisible ? "overflow-hidden pr-3.5" : "overflow-y-scroll pr-2"
-        }`}
+        className="sm:hidden absolute right-2 top-0 h-20 flex items-center z-[60] cursor-pointer group"
+        onClick={() => setIsExplorerOpen(!isExplorerOpen)}
+      >
+        <span className="text-2xl text-colortextsecondary group-hover:text-white px-2">
+          ☰
+        </span>
+      </div>
+
+      {/* Mobile Backdrop */}
+      {isExplorerOpen && (
+        <div
+          className="sm:hidden fixed top-20 bottom-0 inset-x-0 bg-black/60 z-[90]"
+          onClick={() => setIsExplorerOpen(false)}
+        />
+      )}
+
+      {/* Library Explorer Wrapper */}
+      <div
+        className={`
+          fixed top-20 bottom-0 right-0 z-[100] w-80 max-w-[85vw] bg-primary transform transition-transform duration-300 ease-in-out border-l border-colorborder sm:border-none
+          ${isExplorerOpen ? "translate-x-0" : "translate-x-full"}
+          sm:static sm:translate-x-0 sm:float-left sm:w-2/6 xl:w-p21 sm:bg-transparent
+          text-colortextsecondary sm:sticky sm:top-0 sm:h-[calc(100vh-6.5rem)] select-none pt-0 sm:pt-0 sm:mt-4 pl-2
+          overflow-y-auto pr-2
+        `}
       >
         <LibraryExplorer
           contents={contents}
@@ -78,10 +109,9 @@ const CourseDetail = () => {
           videoProgress={videoProgress}
           activeVideoPath={selectedVideoPath}
           videoIdToPlay={videoIdToPlay}
-          onDropdownVisibilityChange={handleDropdownVisibilityChange}
         />
       </div>
-      <div className="w-5/6 xl:w-p79 h-[calc(100vh-5rem)] overflow-y-auto">
+      <div className="w-full sm:w-5/6 xl:w-p79 h-auto sm:h-[calc(100vh-5rem)] sm:overflow-y-auto">
         <VideoPlayer
           videoPath={selectedVideoPath ? getVideoUrl(selectedVideoPath) : ""}
           video={selectedVideo}
