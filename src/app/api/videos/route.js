@@ -1,6 +1,8 @@
 export const dynamic = 'force-dynamic';
 import { ok, err, ensureDb } from '@/lib/apiHelper';
-import { updateProgress, search } from '@/lib/db/repositories/videoRepository';
+import { search } from '@/lib/db/repositories/videoRepository';
+import { getAll as listMainFolders } from '@/lib/db/repositories/mainFolderRepository';
+import { isAllowedVideoPath } from '@/lib/security/pathValidation.mjs';
 import { createReadStream, statSync } from 'fs';
 
 ensureDb();
@@ -13,6 +15,13 @@ export async function GET(request) {
   const query = searchParams.get('query');
 
   if (videoPath) {
+    // Only serve files that live under a registered main-folder root and have
+    // a video extension. Blocks path-traversal reads like ../../etc/passwd.
+    const roots = listMainFolders().map((mf) => mf.path);
+    if (!isAllowedVideoPath(videoPath, roots)) {
+      return new Response('Forbidden', { status: 403 });
+    }
+
     let stat;
     try {
       stat = statSync(videoPath);

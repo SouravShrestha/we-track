@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, forwardRef } from "react";
 import ConfirmationModal from "./ComfirmationModal";
+import { sanitizeNoteHtml } from "@/lib/security/sanitizeHtml.mjs";
 
 const NoteCard = forwardRef(({ note, reloadNotes, isLast }, ref) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,7 +54,7 @@ const NoteCard = forwardRef(({ note, reloadNotes, isLast }, ref) => {
       {/* 2nd row: Actual row */}
       <div
         className="mt-4"
-        dangerouslySetInnerHTML={{ __html: note.content.trim() }} // Render note as HTML
+        dangerouslySetInnerHTML={{ __html: sanitizeNoteHtml(note.content.trim()) }} // Render sanitized note HTML
       />
 
       {/* 3rd row: Edit and Delete buttons */}
