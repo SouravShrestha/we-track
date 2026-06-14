@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import CourseCard from "./CourseCard";
 import CourseCardTiny from "./CourseCardTiny";
@@ -72,8 +72,6 @@ const HomePage = () => {
     }
   };
 
-
-
   useEffect(() => {
     const scanAllFolders = async () => {
       if (foldersToScan && foldersToScan.length > 0) {
@@ -94,7 +92,7 @@ const HomePage = () => {
             temp.startedVideosCount = startedVideosCount;
             temp.completionPercentage = completionPercentage;
 
-            console.log(temp)
+            console.log(temp);
 
             setScannedFolders((prev) => [...(prev || []), temp]);
           } catch (error) {
@@ -112,7 +110,11 @@ const HomePage = () => {
     if (!scannedFolders) return [];
 
     // Filter, sort, and slice in one step
-    return scannedFolders?.filter((folder) => folder.last_played_at !== null && folder.completionPercentage !== 100)
+    return scannedFolders
+      ?.filter(
+        (folder) =>
+          folder.last_played_at !== null && folder.completionPercentage !== 100,
+      )
       .sort((a, b) => new Date(b.last_played_at) - new Date(a.last_played_at))
       .slice(0, 4);
   }, [scannedFolders]);
@@ -152,7 +154,7 @@ const HomePage = () => {
 
       const results = await Promise.all(validationPromises);
       const validationResults = Object.fromEntries(
-        results.map(({ id, exists }) => [id, exists])
+        results.map(({ id, exists }) => [id, exists]),
       );
 
       setValidPaths(validationResults);
@@ -163,18 +165,18 @@ const HomePage = () => {
     }
   }, [scannedFolders]);
 
-
-  const filteredCourses_ = useMemo(() => 
-    filterTags?.length 
-      ? scannedFolders?.filter(folder => 
-          folder.tags.some(folderTag => 
-            filterTags.some(filterTag => filterTag.id === folderTag.id)
+  const filteredCourses_ = useMemo(
+    () =>
+      filterTags?.length
+        ? scannedFolders?.filter((folder) =>
+            folder.tags.some((folderTag) =>
+              filterTags.some((filterTag) => filterTag.id === folderTag.id),
+            ),
           )
-        ) 
-      : scannedFolders, 
-    [filterTags, scannedFolders]
+        : scannedFolders,
+    [filterTags, scannedFolders],
   );
-  
+
   useEffect(() => {
     if (scannedFolders) {
       setFilteredCourses(filteredCourses_);
@@ -187,7 +189,7 @@ const HomePage = () => {
       var fetchedTags = await fetchTags();
       const updatedTags = fetchedTags
         .filter(
-          (tag) => !filterTags.some((filterTag) => filterTag.id === tag.id) // Exclude tags already in filterTags
+          (tag) => !filterTags.some((filterTag) => filterTag.id === tag.id), // Exclude tags already in filterTags
         )
         .map((tag) => {
           return {
@@ -226,8 +228,8 @@ const HomePage = () => {
           (course) =>
             course.id === folderId
               ? { ...course, tags: updatedTags } // Update the tags for this course
-              : course // Return the course as is if it doesn't match
-        )
+              : course, // Return the course as is if it doesn't match
+        ),
       );
     } catch (error) {
       console.error("Error refreshing course tags:", error);
@@ -308,12 +310,15 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="p-4 px-6 pb-0">
-      <Search />
+    <div className="p-3 sm:p-4 sm:px-6 pb-0">
+      {/* Search: on mobile renders as full-width bar (breaks out of padding), on desktop renders as absolute header bar */}
+      <div className="mt-1 mb-5 sm:mx-0 sm:mt-0 sm:mb-0">
+        <Search />
+      </div>
 
       {/* Settings button (Dropdown menu) */}
       <div
-        className="py-1.5 transition-transform duration-150 ease-in-out hover:scale-105 flex items-center group dropdown-toggle cursor-pointer absolute right-5 top-0 h-20"
+        className="py-1.5 transition-transform duration-150 ease-in-out hover:scale-105 flex items-center group dropdown-toggle cursor-pointer absolute right-3 sm:right-5 top-0 h-20"
         onClick={toggleDropdown}
       >
         <span className="ml-1.5 font-medium text-sm text-colortextsecondary group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-gradientEnd group-hover:to-gradientStart bg-clip-text">
@@ -378,7 +383,6 @@ const HomePage = () => {
         onFolderRemoved={scanFolders}
       />
 
-
       {/* Render recents */}
       {topRecentFolders && topRecentFolders.length > 0 && (
         <div className="mb-6">
@@ -393,7 +397,7 @@ const HomePage = () => {
                   course={course}
                   courseColor={getFolderColor(course.id)}
                 />
-              ) : null
+              ) : null,
             )}
           </div>
         </div>
@@ -466,7 +470,7 @@ const HomePage = () => {
                 course={course}
                 courseColor={getFolderColor(course.id)}
               />
-            ) : null
+            ) : null,
           )}
         </Masonry>
       ) : (
@@ -483,8 +487,9 @@ const HomePage = () => {
         <div className="fixed bottom-6 right-6 z-30 py-1.5 px-3 bg-primarydark text-white rounded-lg shadow-md border border-colorborder flex items-center space-x-2">
           <img src={loadingGif} alt="Loading..." className="w-6 h-6" />
           <span className="text-sm">
-            Scanning folders for changes ⏳ Loading {scannedFolders ? scannedFolders?.length + 1 : 1}{" "}
-            of {foldersToScan?.length}
+            Scanning folders for changes ⏳ Loading{" "}
+            {scannedFolders ? scannedFolders?.length + 1 : 1} of{" "}
+            {foldersToScan?.length}
           </span>
         </div>
       )}

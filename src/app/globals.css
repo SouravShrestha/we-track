@@ -16,6 +16,13 @@ code {
     monospace;
 }
 
+/* Prevents iOS Safari from zooming in when an input is focused */
+@media (max-width: 640px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
 .library-explorer{
   overflow-y: scroll; 
 }
@@ -54,6 +61,14 @@ code {
   100%{background-position:left; width: 100%;}
 }
 
+.animate-slide-up {
+  animation: slide-up 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
 .transition-bg {
   transition: background-color 0.2s ease-in-out; /* Adjust the duration and easing function as needed */
 }
@@ -75,18 +90,25 @@ code {
   animation: center-animate 1s ease infinite alternate;
 }
 
-.dropdown-toggle {
-  z-index: 9999; /* Set a high z-index value */
-}
+
 
 .my-masonry-grid {
-  display: -webkit-box; /* Not needed if autoprefixing */
-  display: -ms-flexbox; /* Not needed if autoprefixing */
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  margin-left: -32px; /* gutter size offset */
+  margin-left: -16px;
   width: auto;
 }
 .my-masonry-grid_column {
-  padding-left: 32px; /* gutter size */
+  padding-left: 16px;
   background-clip: padding-box;
+}
+
+@media (min-width: 640px) {
+  .my-masonry-grid {
+    margin-left: -32px;
+  }
+  .my-masonry-grid_column {
+    padding-left: 32px;
+  }
 }
