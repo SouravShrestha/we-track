@@ -57,6 +57,7 @@ To run the pre-built image without needing the source code, run the following co
 docker pull ghcr.io/souravshrestha/we-track:latest
 docker run -d \
   --name we-track \
+  --restart unless-stopped \
   -p 3000:3000 \
   -e DATA_DIR=/data \
   -v we-track-data:/data \
