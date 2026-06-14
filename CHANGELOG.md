@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/SouravShrestha/we-track/compare/v1.1.0...v1.1.1) (2026-06-14)
+
+
+### Bug Fixes
+
+* harden API path validation and note sanitization ([d42e22c](https://github.com/SouravShrestha/we-track/commit/d42e22c020a7390255a321ed0410bb49a70c1828))
+
 ## [1.1.0](https://github.com/SouravShrestha/we-track/compare/v1.0.0...v1.1.0) (2026-06-13)
 
 
