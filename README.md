@@ -51,10 +51,11 @@ Main Folder/
 
 ## Quick Start (Docker)
 
-To run the pre-built image without needing the source code, run the following commands. The `DATA_DIR` and volume mappings ensure your database is safely persisted!
+To run the pre-built image without needing the source code, run the following commands:
 
 ```bash
 docker pull ghcr.io/souravshrestha/we-track:latest
+
 docker run -d \
   --name we-track \
   --restart unless-stopped \
@@ -66,6 +67,25 @@ docker run -d \
 ```
 
 > **Note:** You can replace `/Users/sourav/Documents` with the path to the folder containing your courses.
+
+### Updating to the Latest Image
+
+To update an existing container to the latest release, preserving your data:
+
+```bash
+docker pull ghcr.io/souravshrestha/we-track:latest
+docker stop we-track
+docker rm we-track
+
+docker run -d \
+  --name we-track \
+  --restart unless-stopped \
+  -p 3000:3000 \
+  -e DATA_DIR=/data \
+  -v we-track-data:/data \
+  -v /Users/sourav/Documents:/Documents \
+  ghcr.io/souravshrestha/we-track:latest
+```
 
 ---
 
@@ -80,6 +100,7 @@ npm start        # production
 ```
 
 The SQLite database is stored at:
+
 ```
 ~/Library/Application Support/WeTrack/we_track_db.db
 ```
@@ -91,7 +112,7 @@ The SQLite database is stored at:
 **Prerequisites:** Docker + Docker Compose
 
 ```bash
-docker compose up -d
+docker compose up --build
 ```
 
 Open `http://localhost:3000`.
@@ -101,11 +122,13 @@ Open `http://localhost:3000`.
 - **Paths are case-sensitive** inside the container (Linux filesystem). Enter the path exactly as it appears on disk — e.g. `/Users/sourav/Documents/Learning/Courses`, not `/users/sourav/documents/learning/courses`.
 
 To stop and remove containers (data is preserved in the volume):
+
 ```bash
 docker compose down
 ```
 
 To also delete all saved data:
+
 ```bash
 docker compose down -v
 ```
