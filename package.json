@@ -1,6 +1,6 @@
 {
   "name": "we-track",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Self-hosted web app to track progress through locally stored video courses",
   "private": true,
   "author": "SouravShrestha",
