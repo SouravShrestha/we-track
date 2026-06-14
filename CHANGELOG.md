@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/SouravShrestha/we-track/compare/v1.1.1...v1.2.0) (2026-06-14)
+
+
+### Features
+
+* add Footer component and enhance layout structure with improved styling ([d1581f6](https://github.com/SouravShrestha/we-track/commit/d1581f6d89729c4ea82ab263216c4cccf1a43a20))
+* refactor Search and TagManager components for improved readability and performance ([16155b3](https://github.com/SouravShrestha/we-track/commit/16155b352c3ab8738761318f87c3e2be08e63f95))
+
 ## [1.1.1](https://github.com/SouravShrestha/we-track/compare/v1.1.0...v1.1.1) (2026-06-14)
 
 
