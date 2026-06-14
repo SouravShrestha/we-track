@@ -10,6 +10,7 @@ export async function POST(request) {
   try {
     return ok(scanFolder(folder_path));
   } catch (e) {
-    return err(e.message);
+    console.error('Folder scan failed:', e);
+    return err('Failed to scan the specified folder.', 500);
   }
 }
