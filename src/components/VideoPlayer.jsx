@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState, useEffect, useRef } from "react";
 const reloadIcon = "/images/reload.png";
 const reloadPlainIcon = "/images/restart-plain.png";
@@ -8,7 +8,6 @@ import NoteCard from "./NoteCard";
 import AddNote from "./AddNote";
 import { updateVideoProgressB, getNotesB } from "../utils/api";
 import { formatTitle } from "../utils/formatTitle";
-
 
 const VideoPlayer = ({
   videoPath,
@@ -205,7 +204,7 @@ const VideoPlayer = ({
           if (videoRef.current) {
             videoRef.current.currentTime = Math.min(
               videoRef.current.currentTime + 5,
-              videoRef.current.duration
+              videoRef.current.duration,
             ); // Seek forward 5 seconds
           }
           break;
@@ -213,7 +212,7 @@ const VideoPlayer = ({
           if (videoRef.current) {
             videoRef.current.currentTime = Math.max(
               videoRef.current.currentTime - 5,
-              0
+              0,
             ); // Seek backward 5 seconds
           }
           break;
@@ -254,9 +253,9 @@ const VideoPlayer = ({
         <div className="w-full h-1 loading-bar fixed top-0 left-0 gradient-loader select-none z-20"></div>
       )}
       <div className="flex flex-col items-center select-none">
-        <div className="w-11/12 xl:w-10/12 flex">
+        <div className="w-full sm:w-11/12 xl:w-10/12 flex flex-col sm:flex-row">
           {/* video player */}
-          <div className="aspect-video w-11/12 bg-primarydark relative">
+          <div className="aspect-video w-full sm:w-11/12 bg-primarydark relative">
             <video
               ref={videoRef}
               src={videoPath}
@@ -267,6 +266,7 @@ const VideoPlayer = ({
               onEnded={handleEnded}
               controls
               autoPlay
+              playsInline
             />
             {/* Overlay with Restart Button */}
             {showOverlay && (
@@ -285,7 +285,7 @@ const VideoPlayer = ({
             )}
           </div>
           {/* player-controls */}
-          <div className="w-1/12 flex py-6 bg-primarydark flex-col space-y-12 justify-center">
+          <div className="w-full sm:w-1/12 flex py-4 sm:py-6 bg-primarydark flex-row sm:flex-col justify-around sm:justify-center items-center sm:space-y-12 border-t sm:border-t-0 border-colorborder">
             {/* autoplay */}
             <div
               className="flex flex-col items-center w-full cursor-pointer transition-transform duration-200 ease-in-out bg-clip-text hover:text-transparent hover:bg-gradient-to-r hover:from-gradientEnd hover:to-gradientStart hover:scale-105"
@@ -327,7 +327,7 @@ const VideoPlayer = ({
                 </div>
               </div>
 
-              <span className="mt-5 text-xs">Autoplay</span>
+              <span className="mt-2 sm:mt-5 text-xs">Autoplay</span>
             </div>
 
             {/* restart */}
@@ -340,7 +340,7 @@ const VideoPlayer = ({
                 alt="Reload Icon"
                 className="inline-block w-4 h-4 group-hover:filter-primary"
               />
-              <span className="mt-3 text-xs">Restart</span>
+              <span className="mt-2 sm:mt-3 text-xs">Restart</span>
             </div>
 
             {/* mark as complete */}
@@ -353,14 +353,14 @@ const VideoPlayer = ({
                 alt="Complete Icon"
                 className="inline-block w-4 h-4 group-hover:filter-primary"
               />
-              <span className="mt-3 text-xs text-center leading-4">
+              <span className="mt-2 sm:mt-3 text-[10px] sm:text-xs text-center leading-3 sm:leading-4">
                 Mark complete
               </span>
             </div>
           </div>
         </div>
         {/* next/prev buttons */}
-        <div className="w-11/12 xl:w-10/12 flex items-start mt-5 relative">
+        <div className="w-full px-4 sm:px-0 sm:w-11/12 xl:w-10/12 flex items-start mt-5 relative gap-2 sm:gap-0">
           {/* Previous Button */}
           <div className="w-1/2 min-h-16">
             {prevVideo && (
@@ -371,10 +371,11 @@ const VideoPlayer = ({
                 <img
                   src={pointIcon}
                   alt="Point Icon"
-                  className="inline-block w-8 h-8 transform scale-x-[-1]"
+                  className="inline-block w-6 h-6 sm:w-8 sm:h-8 transform scale-x-[-1]"
                 />
-                <span className="mt-3 font-medium text-sm">
-                  {String(prevVideoNum).padStart(2, '0')}. {formatTitle(prevVideo.name)}
+                <span className="mt-2 sm:mt-3 font-medium text-xs sm:text-sm text-left">
+                  {String(prevVideoNum).padStart(2, "0")}.{" "}
+                  {formatTitle(prevVideo.name)}
                 </span>
               </button>
             )}
@@ -390,17 +391,18 @@ const VideoPlayer = ({
                 <img
                   src={pointIcon}
                   alt="Point Icon"
-                  className="inline-block w-8 h-8"
+                  className="inline-block w-6 h-6 sm:w-8 sm:h-8"
                 />
-                <span className="mt-3 font-medium text-sm">
-                  {String(nextVideoNum).padStart(2, '0')}. {formatTitle(nextVideo.name)}
+                <span className="mt-2 sm:mt-3 font-medium text-xs sm:text-sm text-right">
+                  {String(nextVideoNum).padStart(2, "0")}.{" "}
+                  {formatTitle(nextVideo.name)}
                 </span>
               </button>
             )}
           </div>
         </div>
         {/* notes */}
-        <div className="w-11/12 xl:w-10/12 mt-12">
+        <div className="w-full px-4 sm:px-0 sm:w-11/12 xl:w-10/12 mt-8 sm:mt-12">
           <span className="font-semibold text-lg cursor-default">Notes</span>
           <AddNote
             videoId={video.id}

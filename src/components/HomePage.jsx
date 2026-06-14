@@ -484,7 +484,7 @@ const HomePage = () => {
       )}
 
       {loading && (
-        <div className="fixed bottom-6 right-6 z-30 py-1.5 px-3 bg-primarydark text-white rounded-lg shadow-md border border-colorborder flex items-center space-x-2">
+        <div className="fixed bottom-3 sm:botttom-6 right-3 sm:right-6 z-30 py-1.5 px-3 bg-primarydark text-white rounded-lg shadow-md border border-colorborder flex items-center space-x-2">
           <img src={loadingGif} alt="Loading..." className="w-6 h-6" />
           <span className="text-sm">
             Scanning folders for changes ⏳ Loading{" "}

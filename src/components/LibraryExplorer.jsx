@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useEffect, useState, useRef, useMemo } from "react";
 const checkIcon = "/images/check.png";
 const newIcon = "/images/new.png";
@@ -15,60 +15,50 @@ const LibraryExplorer = ({
   videoIdToPlay,
   onDropdownVisibilityChange,
 }) => {
-  const [dropdownVisible, setDropdownVisible] = useState(false);
   const contentRefs = useRef([]);
   const videoRefs = useRef([]);
-  const dropdownRef = useRef(null);
-  const [dropdownPosition, setDropdownPosition] = useState(0);
+  const containerRef = useRef(null);
 
   const getChapterVideos = (content) => {
     if (content.lessons && content.lessons.length > 0) {
-      return content.lessons.flatMap(ls => (ls.videos || []).sort((a, b) => a.name.localeCompare(b.name)));
+      return content.lessons.flatMap((ls) =>
+        (ls.videos || []).sort((a, b) => a.name.localeCompare(b.name)),
+      );
     }
     return (content.videos || []).sort((a, b) => a.name.localeCompare(b.name));
   };
 
   const chaptersWithContent = useMemo(
-    () => contents.filter(c => getChapterVideos(c).length > 0),
-    [contents]
+    () => contents.filter((c) => getChapterVideos(c).length > 0),
+    [contents],
   );
 
   const allVideos = useMemo(
     () => chaptersWithContent.flatMap(getChapterVideos),
-    [chaptersWithContent]
+    [chaptersWithContent],
   );
 
   // Global video number map: video.id → 1-based index across all chapters
   const videoNumberMap = useMemo(() => {
     const map = {};
-    allVideos.forEach((v, i) => { map[v.id] = i + 1; });
+    allVideos.forEach((v, i) => {
+      map[v.id] = i + 1;
+    });
     return map;
   }, [allVideos]);
 
   const handleContentClick = (index) => {
     contentRefs.current[index].scrollIntoView({ behavior: "smooth" });
-    setTimeout(() => setDropdownVisible(!dropdownVisible), 200);
-  };
-
-  useEffect(() => {
-    onDropdownVisibilityChange(dropdownVisible);
-  }, [dropdownVisible]);
-
-  const handleChapterClick = (event) => {
-    setDropdownVisible(!dropdownVisible);
-    let clickedDiv = event.target;
-    if (clickedDiv.tagName === "DIV") {
-      clickedDiv = clickedDiv.querySelector("span.chapter");
-    }
-    const rect = clickedDiv.getBoundingClientRect();
-    setDropdownPosition(rect.bottom);
   };
 
   useEffect(() => {
     if (activeVideoPath) {
-      const activeVideo = allVideos.find(v => v.path === activeVideoPath);
+      const activeVideo = allVideos.find((v) => v.path === activeVideoPath);
       if (activeVideo && videoRefs.current[activeVideo.id]) {
-        videoRefs.current[activeVideo.id].scrollIntoView({ behavior: "smooth", block: "center" });
+        videoRefs.current[activeVideo.id].scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
       }
     }
   }, [activeVideoPath]);
@@ -76,19 +66,24 @@ const LibraryExplorer = ({
   useEffect(() => {
     const findPassedVideo = (videoId) => {
       if (!videoId) return null;
-      return allVideos.find(v => v.id.toString() === videoId.toString()) ?? null;
+      return (
+        allVideos.find((v) => v.id.toString() === videoId.toString()) ?? null
+      );
     };
 
     const findFirstUnwatchedVideo = () => {
       let firstVideo = null;
       for (const video of allVideos) {
         firstVideo = firstVideo || video;
-        if (video.progress < convertDurationToSeconds(video.duration)) return video;
+        if (video.progress < convertDurationToSeconds(video.duration))
+          return video;
       }
       return firstVideo;
     };
 
-    const target = videoIdToPlay ? findPassedVideo(videoIdToPlay) : findFirstUnwatchedVideo();
+    const target = videoIdToPlay
+      ? findPassedVideo(videoIdToPlay)
+      : findFirstUnwatchedVideo();
     if (target) onVideoClick(target);
   }, [contents]);
 
@@ -99,27 +94,16 @@ const LibraryExplorer = ({
     onVideoClick(video);
   };
 
-  const handleClickOutside = (event) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target) &&
-      !event.target.closest(".dropdown-toggle")
-    ) {
-      setDropdownVisible(false);
-      onDropdownVisibilityChange(false);
-    }
-  };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const VideoItem = ({ video }) => {
-    const progress = videoProgress[video.id] !== undefined ? videoProgress[video.id] : video.progress;
+    const progress =
+      videoProgress[video.id] !== undefined
+        ? videoProgress[video.id]
+        : video.progress;
     const isActive = video.path === activeVideoPath;
     const isComplete = progress >= convertDurationToSeconds(video.duration);
-    const globalNum = String(videoNumberMap[video.id]).padStart(2, '0');
+    const globalNum = String(videoNumberMap[video.id]).padStart(2, "0");
     const label = `${globalNum}. ${formatTitle(video.name)}`;
 
     return (
@@ -134,55 +118,47 @@ const LibraryExplorer = ({
       >
         <div className="flex items-center w-4/5 justify-start gap-2">
           {/* Status icon */}
-          {!isActive && (
-            progress <= 0 ? (
-              <img src={newIcon} alt="New" className="inline-block w-5 h-5 shrink-0" />
+          {!isActive &&
+            (progress <= 0 ? (
+              <img
+                src={newIcon}
+                alt="New"
+                className="inline-block w-5 h-5 shrink-0"
+              />
             ) : isComplete ? (
-              <img src={checkIcon} alt="Done" className="inline-block w-6 h-6 shrink-0" />
+              <img
+                src={checkIcon}
+                alt="Done"
+                className="inline-block w-6 h-6 shrink-0"
+              />
             ) : (
-              <img src={progressIcon} alt="In progress" className="inline-block w-6 h-6 shrink-0" />
-            )
-          )}
+              <img
+                src={progressIcon}
+                alt="In progress"
+                className="inline-block w-6 h-6 shrink-0"
+              />
+            ))}
           <div className="w-full truncate text-[14px]">{label}</div>
         </div>
         <div className="w-auto flex justify-end shrink-0 ml-1">
           {!isActive ? (
-            <span className="text-[10px] mt-0.5 text-colortextsecondary hover:no-underline transition duration-200">{video.duration}</span>
+            <span className="text-[10px] mt-0.5 text-colortextsecondary hover:no-underline transition duration-200">
+              {video.duration}
+            </span>
           ) : (
-            <img src={playingIcon} alt="Playing" className="inline-block w-5 h-5" />
+            <img
+              src={playingIcon}
+              alt="Playing"
+              className="inline-block w-5 h-5"
+            />
           )}
         </div>
       </li>
     );
   };
 
-
   return (
-    <div className="relative ml-3 mr-3">
-      {/* Chapter navigation dropdown */}
-      {dropdownVisible && (
-        <div
-          ref={dropdownRef}
-          className="dropdown-list fixed z-20 text-base font-semibold mt-3 bg-primarydark border border-colorborder shadow-none -ml-4 xl:w-1/5 max-h-96 overflow-y-scroll w-80"
-          style={{ top: `${dropdownPosition}px` }}
-        >
-          {chaptersWithContent.map((content, index) => (
-            <div
-              key={content.id}
-              className="cursor-pointer hover:bg-primary px-3 py-3"
-              onClick={() => handleContentClick(index)}
-            >
-              <div className="flex items-center">
-                <span className="mr-3 flex items-center justify-center w-7 h-7 rounded-sm bg-colorsecondary text-white font-semibold min-w-7">
-                  {index + 1}
-                </span>
-                <span>{formatTitle(content.name)}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
+    <div className="relative ml-3 mr-3" ref={containerRef}>
       {/* Chapter list */}
       {chaptersWithContent.map((content, index) => {
         const hasLessons = content.lessons && content.lessons.length > 0;
@@ -194,17 +170,12 @@ const LibraryExplorer = ({
             ref={(el) => (contentRefs.current[index] = el)}
           >
             {/* Chapter header */}
-            <div className="text-base font-semibold cursor-pointer sticky top-0 bg-primary -ml-1 pl-1 dropdown-toggle">
-              <div
-                className="flex items-center pb-3 dropdown-toggle"
-                onClick={handleChapterClick}
-              >
-                <span className="mr-3 flex items-center justify-center w-7 h-7 rounded-sm bg-gradient-to-r from-gradientEnd to-gradientStart text-white font-semibold dropdown-toggle min-w-7">
+            <div className="text-base font-semibold sticky top-0 bg-primary -ml-1 pl-1 sm:pt-0 pt-4">
+              <div className="flex items-center pb-3">
+                <span className="mr-3 flex items-center justify-center w-7 h-7 rounded-sm bg-gradient-to-r from-gradientEnd to-gradientStart text-white font-semibold min-w-7">
                   {index + 1}
                 </span>
-                <span className="chapter">
-                  {formatTitle(content.name)}
-                </span>
+                <span className="chapter">{formatTitle(content.name)}</span>
               </div>
               <hr className="border-colorborder" />
             </div>
@@ -224,7 +195,9 @@ const LibraryExplorer = ({
                       <ul className="mr-2 pl-1 w-full space-y-3">
                         {lesson.videos
                           .sort((a, b) => a.name.localeCompare(b.name))
-                          .map(video => <VideoItem key={video.id} video={video} />)}
+                          .map((video) => (
+                            <VideoItem key={video.id} video={video} />
+                          ))}
                       </ul>
                     </div>
                   ))}
@@ -234,7 +207,9 @@ const LibraryExplorer = ({
               <ul className="mt-3 mr-2 pl-1 w-full space-y-3">
                 {content.videos
                   .sort((a, b) => a.name.localeCompare(b.name))
-                  .map(video => <VideoItem key={video.id} video={video} />)}
+                  .map((video) => (
+                    <VideoItem key={video.id} video={video} />
+                  ))}
               </ul>
             )}
           </div>
