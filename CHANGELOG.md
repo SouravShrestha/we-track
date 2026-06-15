@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/SouravShrestha/we-track/compare/v1.3.0...v1.3.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* add overflow-y-auto to LibraryExplorer container for better scrolling ([551d81c](https://github.com/SouravShrestha/we-track/commit/551d81c124d5b38cbda405f26ad06783c81a27f4))
+
 ## [1.3.0](https://github.com/SouravShrestha/we-track/compare/v1.2.0...v1.3.0) (2026-06-15)
 
 
