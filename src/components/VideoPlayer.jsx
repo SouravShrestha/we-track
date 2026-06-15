@@ -254,8 +254,8 @@ const VideoPlayer = ({
       )}
       <div className="flex flex-col items-center select-none">
         {/* video title */}
-        <div className="w-full sm:w-11/12 xl:w-10/12 mb-3">
-          <h1 className="text-xl text-center text-colortext">
+        <div className="w-full sm:w-11/12 xl:w-10/12 mb-3 ml-6 sm:ml-0">
+          <h1 className="text-lg sm:text-xl text-left text-colortext">
             {formatTitle(video.name)}
           </h1>
         </div>
