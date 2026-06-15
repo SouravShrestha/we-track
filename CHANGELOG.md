@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/SouravShrestha/we-track/compare/v1.2.0...v1.3.0) (2026-06-15)
+
+
+### Features
+
+* adjust video title styling for better alignment and size ([2a70948](https://github.com/SouravShrestha/we-track/commit/2a709483c77aa236da72e254172b454f7e5732c2))
+
 ## [1.2.0](https://github.com/SouravShrestha/we-track/compare/v1.1.1...v1.2.0) (2026-06-14)
 
 
