@@ -158,7 +158,7 @@ const LibraryExplorer = ({
   };
 
   return (
-    <div className="relative ml-3 mr-3" ref={containerRef}>
+    <div className="relative ml-3 mr-3 overflow-y-auto" ref={containerRef}>
       {/* Chapter list */}
       {chaptersWithContent.map((content, index) => {
         const hasLessons = content.lessons && content.lessons.length > 0;
