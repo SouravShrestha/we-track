@@ -253,6 +253,12 @@ const VideoPlayer = ({
         <div className="w-full h-1 loading-bar fixed top-0 left-0 gradient-loader select-none z-20"></div>
       )}
       <div className="flex flex-col items-center select-none">
+        {/* video title */}
+        <div className="w-full sm:w-11/12 xl:w-10/12 mb-3 ml-6 sm:ml-0">
+          <h1 className="text-lg sm:text-xl text-left text-colortext">
+            {formatTitle(video.name)}
+          </h1>
+        </div>
         <div className="w-full sm:w-11/12 xl:w-10/12 flex flex-col sm:flex-row">
           {/* video player */}
           <div className="aspect-video w-full sm:w-11/12 bg-primarydark relative">
